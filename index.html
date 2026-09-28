@@ -90,7 +90,8 @@ kbd{font-family:var(--f-ui);font-size:11px;border:1px solid rgba(239,229,207,.3)
 .rank-sub{font-family:var(--f-num);font-style:italic;letter-spacing:.5em;font-size:14px;text-align:center;color:var(--washi);margin-top:6px}
 .r-side{display:flex;flex-direction:column;gap:16px}
 .r-head{margin:0;font-family:var(--f-jp);font-weight:800;font-size:clamp(22px,3.2vw,30px);letter-spacing:.14em;text-wrap:balance}
-.r-kojo{margin:0;font-family:"Yuji Syuku",var(--f-jp);font-size:clamp(20px,2.6vw,26px);color:var(--gold-hi);letter-spacing:.12em}`n.r-sub{margin:0;font-size:13px;color:var(--washi-dim);line-height:1.7}
+.r-kojo{margin:0;font-family:"Yuji Syuku",var(--f-jp);font-size:clamp(20px,2.6vw,26px);color:var(--gold-hi);letter-spacing:.12em}
+.r-sub{margin:0;font-size:13px;color:var(--washi-dim);line-height:1.7}
 .stats{margin:0;display:grid;grid-template-columns:1fr auto;gap:8px 18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
 .stats dt{font-size:13px;color:var(--washi-dim);letter-spacing:.12em;align-self:baseline}
 .stats dd{margin:0;text-align:right;font-family:var(--f-num);font-style:italic;font-weight:700;font-size:22px;font-variant-numeric:tabular-nums;align-self:baseline}
@@ -130,7 +131,95 @@ kbd{font-family:var(--f-ui);font-size:11px;border:1px solid rgba(239,229,207,.3)
   .r-grid{grid-template-columns:1fr;justify-items:center}
   .r-side{width:100%}
 }
-@media (prefers-reduced-motion:reduce){#kamiBtn{animation:none}}
+.start-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+/* ---------- 奉納 offer form ---------- */
+.offer{display:grid;gap:8px;border:1px solid var(--line);padding:12px 14px;background:rgba(14,11,36,.5)}
+.offer label{font-family:"Yuji Syuku",var(--f-jp);font-size:18px;letter-spacing:.14em;color:var(--gold-hi)}
+.offer-row{display:flex;gap:8px}
+.offer input{flex:1;min-width:0;background:#f1e8d3;color:#1a1016;border:0;padding:10px 12px;font-family:"Yuji Syuku",var(--f-jp);font-size:18px}
+.offer input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.offer .note{margin:0;font-size:11.5px;color:var(--washi-dim);line-height:1.6}
+.offer-msg{margin:0;font-size:13px;color:var(--gold-hi);min-height:1em}
+.offer-msg:empty{display:none}
+
+/* ---------- 奉納番付 ---------- */
+#banzuke{display:flex;align-items:center;justify-content:center;background:rgba(7,6,26,.93);z-index:6}
+.bz{width:min(960px,100%);display:grid;gap:12px}
+.bz-head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 18px}
+.bz-title{margin:0;font-family:"Yuji Syuku",var(--f-jp);font-weight:400;font-size:clamp(32px,5vw,50px);letter-spacing:.2em;color:var(--gold-hi);line-height:1.1}
+.bz-date{margin:0 0 6px;font-size:12px;letter-spacing:.3em;color:var(--washi-dim)}
+.bz-tabs{margin-left:auto;display:flex;gap:6px}
+.bz-tabs button{background:transparent;border:1px solid var(--line);padding:8px 12px;font-family:var(--f-jp);font-weight:800;letter-spacing:.14em;font-size:14px}
+.bz-tabs button[aria-selected="true"]{background:var(--shu);border-color:var(--shu);color:#fff6ea}
+.bz-board{background:#f1e8d3;color:#1a1016;border:3px double #1a1016;box-shadow:0 0 0 5px #f1e8d3,0 0 0 6px var(--gold);
+  margin:6px;height:min(56vh,470px);overflow-x:auto;overflow-y:hidden;padding:12px 8px}
+.bz-board ol{list-style:none;margin:0;padding:0;writing-mode:vertical-rl;display:flex;flex-direction:column;height:100%}
+.bz-board li{flex:none;display:flex;align-items:center;gap:6px;padding:4px 7px;border-left:1px solid rgba(26,16,22,.28);white-space:nowrap}
+.bz-board li:last-child{border-left:0}
+.bz-no{font-family:var(--f-jp);font-weight:800;font-size:12px;color:#8a1c12}
+.bz-rank{font-family:var(--f-jp);font-weight:800;font-size:12px;letter-spacing:.2em;background:#1a1016;color:#f1e8d3;padding:4px 1px}
+.bz-name{font-family:"Yuji Syuku",var(--f-jp);font-size:20px;letter-spacing:.06em;margin-block:4px auto}
+.bz-score{font-family:var(--f-num);font-style:italic;font-weight:700;font-size:13px;text-orientation:upright;letter-spacing:-.18em}
+.bz-meta{font-size:10.5px;color:#5a4a44;letter-spacing:.1em}
+.bz-board li.r1 .bz-name{font-size:34px}
+.bz-board li.r2 .bz-name{font-size:29px}
+.bz-board li.r3 .bz-name{font-size:26px}
+.bz-board li.r1 .bz-rank{background:#8a1c12}
+.bz-board li.me{background:rgba(207,58,36,.14)}
+.bz-state{margin:0;font-size:13px;color:var(--washi-dim);line-height:1.7}
+.bz-state:empty{display:none}
+
+/* ---------- 横向き rotate prompt ---------- */
+#rotate{display:none;position:fixed;inset:0;z-index:30;background:var(--night);color:var(--washi);
+  flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+.rot-phone{width:46px;height:78px;border:3px solid var(--gold);border-radius:8px;position:relative;animation:rot 2.2s ease-in-out infinite}
+.rot-phone::after{content:"";position:absolute;left:50%;bottom:5px;width:10px;height:3px;margin-left:-5px;background:var(--gold);border-radius:2px}
+@keyframes rot{0%,20%{transform:rotate(0)}50%,80%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+.rot-title{margin:0;font-family:"Yuji Syuku",var(--f-jp);font-size:24px;letter-spacing:.14em;color:var(--gold-hi)}
+.rot-sub{margin:0;font-size:13px;color:var(--washi-dim);line-height:1.7;max-width:26em}
+@media (pointer:coarse) and (orientation:portrait){ #rotate{display:flex} }
+
+/* 横向きスマホ: compact everything to fit ~390px of height */
+@media (max-height:520px){
+  .screen{padding-top:max(12px,env(safe-area-inset-top,0px));padding-bottom:max(12px,env(safe-area-inset-bottom,0px))}
+  #title{align-items:flex-start}
+  .t-grid{grid-template-columns:auto minmax(0,440px);margin-left:max(8px,env(safe-area-inset-left,0px));gap:22px}
+  .logo{flex-direction:row-reverse}
+  .logo-jp{writing-mode:vertical-rl;font-size:clamp(64px,24vh,110px)}
+  .logo-en{writing-mode:vertical-rl;font-size:12px;letter-spacing:.5em;padding:4px 0 0;align-self:auto}
+  .seal{writing-mode:vertical-rl;margin:auto 0 0;padding:5px 2px}
+  .menu{gap:10px}
+  .lead{font-size:14px;line-height:1.7}
+  .diff{padding:9px 12px}
+  .d-name{font-size:20px}
+  .d-note{display:none}
+  .start{font-size:24px;padding:10px 36px 10px 22px}
+  .keys{font-size:11.5px;padding-top:8px}
+  .fine{font-size:10.5px}
+  .r-grid{grid-template-columns:auto minmax(0,420px);justify-items:stretch;gap:24px}
+  .rank{font-size:clamp(90px,34vh,160px)}
+  .r-side{gap:10px}
+  .stats{padding:8px 0;gap:4px 14px}
+  .stats dd{font-size:18px}.stats dd.big{font-size:24px}
+  .judges div{padding:4px 0}
+  .bz{gap:6px}
+  .bz-board{height:64vh;padding:6px 4px}
+  .bz-board li{gap:3px;padding:2px 5px}
+  .bz-name{font-size:15px}
+  .bz-board li.r1 .bz-name{font-size:22px}
+  .bz-board li.r2 .bz-name{font-size:19px}
+  .bz-board li.r3 .bz-name{font-size:17px}
+  .bz-rank{font-size:10px;padding:2px 1px}
+  .bz-score{font-size:11px}
+  .bz-meta{display:none}
+  .bz-title{font-size:28px}
+  .bz-tabs button{padding:5px 10px;font-size:13px}
+  .p-title{font-size:36px}
+}
+@media (prefers-reduced-motion:reduce){#kamiBtn{animation:none}.rot-phone{animation:none;transform:rotate(-90deg)}}
+.tc{display:none}
+@media (pointer:coarse){.tc{display:inline}.kb{display:none}}
 </style>
 
 </head>
@@ -159,11 +248,14 @@ kbd{font-family:var(--f-ui);font-size:11px;border:1px solid rgba(239,229,207,.3)
           <span class="d-note">明治に生まれた速い囃子。石見神楽の本領</span>
         </button>
       </div>
-      <button class="start" id="start">開幕<small>START</small></button>
+      <div class="start-row">
+        <button class="start" id="start">開幕<small>START</small></button>
+        <button class="btn2" id="bzOpen">奉納番付</button>
+      </div>
       <dl class="keys">
-        <dt>舞う</dt><dd><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> または <kbd>D</kbd><kbd>F</kbd><kbd>J</kbd><kbd>K</kbd>（D=← F=↓ J=↑ K=→）<br>スマホは画面の上下左右をタップ</dd>
-        <dt>神憑</dt><dd>ゲージが満ちたら <kbd>SPACE</kbd> か「神憑」ボタン。面が変わり、得点と打撃が倍に</dd>
-        <dt>中入り</dt><dd><kbd>ESC</kbd> で一時停止</dd>
+        <dt>舞う</dt><dd><span class="tc">首が輪に届く瞬間に、画面の上・下・左・右をタップ。同時に2本来たら2本指で</span><span class="kb"><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> または <kbd>D</kbd><kbd>F</kbd><kbd>J</kbd><kbd>K</kbd>（D=← F=↓ J=↑ K=→）。画面タップでも舞えます</span></dd>
+        <dt>神憑</dt><dd>ゲージが満ちたら<span class="kb"> <kbd>SPACE</kbd> か</span>右下の「神憑」ボタン。面が変わり、得点と打撃が倍に</dd>
+        <dt>中入り</dt><dd><span class="kb"><kbd>ESC</kbd> か</span>左上の ▌▌ で一時停止</dd>
       </dl>
       <div class="offset">判定調整
         <button id="offm" aria-label="判定を早める">−</button>
@@ -171,7 +263,7 @@ kbd{font-family:var(--f-ui);font-size:11px;border:1px solid rgba(239,229,207,.3)
         <button id="offp" aria-label="判定を遅らせる">＋</button>
         <span>音が遅れて聞こえるなら＋へ</span>
       </div>
-      <p class="fine">囃子の音はすべてブラウザの中で合成しています。音が出ます。音量にご注意ください。</p>
+      <p class="fine">囃子の音はすべてブラウザの中で合成しています。音が出ます。音量にご注意ください。<span class="tc">iPhoneはマナーモードだと音が鳴りません。イヤホンの方が判定がずれにくくなります（Bluetoothは遅れます）。</span></p>
     </div>
   </div>
 </section>
@@ -194,7 +286,8 @@ kbd{font-family:var(--f-ui);font-size:11px;border:1px solid rgba(239,229,207,.3)
       <div class="rank-sub" id="rankSub">KIWAMI</div>
     </div>
     <div class="r-side">
-      <p class="r-kojo" id="resKojo">これにて奉納、舞い納め</p>`n      <h2 class="r-head" id="resHead">大蛇退治 成就</h2>
+      <p class="r-kojo" id="resKojo">これにて奉納、舞い納め</p>
+      <h2 class="r-head" id="resHead">大蛇退治 成就</h2>
       <p class="r-sub" id="resSub"></p>
       <dl class="stats">
         <dt>奉納点</dt><dd class="big" id="rsScore">0</dd>
@@ -208,13 +301,45 @@ kbd{font-family:var(--f-ui);font-size:11px;border:1px solid rgba(239,229,207,.3)
         <div><b style="color:var(--washi-dim)">可</b><span id="rsKa">0</span></div>
         <div><b style="color:var(--shu)">失</b><span id="rsS">0</span></div>
       </div>
+      <form class="offer" id="offerForm" autocomplete="off">
+        <label for="bzName">奉納番付に名を残す</label>
+        <div class="offer-row">
+          <input id="bzName" name="bzName" maxlength="12" placeholder="舞手名（12文字まで）" enterkeyhint="send">
+          <button class="btn2 primary" id="bzSubmit" type="submit">奉納する</button>
+        </div>
+        <p class="note">本名・学校名など、個人がわかる名前は入れないでください。番付は誰でも見られます。</p>
+        <p class="offer-msg" id="bzMsg" role="status"></p>
+      </form>
       <div class="actions">
         <button class="btn2 primary" id="retryBtn">もう一度舞う</button>
+        <button class="btn2" id="bzFromResult">奉納番付を見る</button>
         <button class="btn2" id="backBtn">演目選択へ</button>
       </div>
     </div>
   </div>
 </section>
+
+<section id="banzuke" class="screen" hidden aria-labelledby="bzTitle">
+  <div class="bz">
+    <header class="bz-head">
+      <h2 class="bz-title" id="bzTitle">奉納番付</h2>
+      <p class="bz-date" id="bzDate"></p>
+      <div class="bz-tabs" role="tablist" aria-label="囃子の部">
+        <button role="tab" id="bzTabRoku" data-d="roku" aria-selected="true">六調子の部</button>
+        <button role="tab" id="bzTabHachi" data-d="hachi" aria-selected="false">八調子の部</button>
+      </div>
+    </header>
+    <div class="bz-board" id="bzBoard"><ol id="bzList"></ol></div>
+    <p class="bz-state" id="bzState" role="status"></p>
+    <div class="actions"><button class="btn2" id="bzClose">戻る</button></div>
+  </div>
+</section>
+
+<div id="rotate" role="alert">
+  <div class="rot-phone" aria-hidden="true"></div>
+  <p class="rot-title">端末を横向きにしてください</p>
+  <p class="rot-sub">横向きで舞う神楽です。画面の回転ロックがかかっている場合は解除してください。</p>
+</div>
 
 <button id="pauseBtn" aria-label="一時停止" hidden>▌▌</button>
 <button id="kamiBtn" hidden>神憑<small>SPACE</small></button>
@@ -225,6 +350,14 @@ kbd{font-family:var(--f-ui);font-size:11px;border:1px solid rgba(239,229,207,.3)
 const $ = s => document.querySelector(s);
 const cv = $('#cv'), ctx = cv.getContext('2d');
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TOUCH = matchMedia('(pointer: coarse)').matches;
+let LOW = false, dprCap = TOUCH ? 1.5 : 2;
+function setLow(){
+  if (LOW) return; LOW = true;
+  // shadowBlur is the costliest canvas op on phones; switch it off for this context
+  try { Object.defineProperty(ctx, 'shadowBlur', { set(){}, get(){ return 0; }, configurable:true }); } catch(e){}
+}
+if (TOUCH) setLow();
 const F_JP = '"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif';
 const F_UI = '"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif';
 const F_NUM = '"Bodoni Moda","Didot","Bodoni 72",serif';
@@ -672,14 +805,14 @@ function buildStatic(){
   v.fillStyle = vr; v.fillRect(0,0,W,H);
 }
 function resize(){
-  DPR = Math.min(window.devicePixelRatio||1, 2);
+  DPR = Math.min(window.devicePixelRatio||1, dprCap);
   W = Math.max(320, innerWidth||0); H = Math.max(320, innerHeight||0);
   cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
   ctx.setTransform(DPR,0,0,DPR,0,0);
   const cs = getComputedStyle(document.documentElement);
   SAFE_T = parseFloat(cs.paddingTop)||0; SAFE_B = parseFloat(cs.paddingBottom)||0;
   CY = H*.5 + (SAFE_T-SAFE_B)/2;
-  R = Math.max(40, Math.min(W,H)*.12);
+  R = Math.max(40, H > W*1.3 ? W*.15 : H < 520 && W > H ? H*.15 : Math.min(W,H)*.12);
   D = Math.max(R*2.3, Math.min(W*.5, (H-SAFE_T-SAFE_B)*.5) - 6);
   HZ = H*.57;
   buildStatic();
@@ -775,7 +908,7 @@ function toScreen(px,py,P,u){
 const parts = [], slashes = [], pops = [], waves = [], cutins = [];
 let shake = 0, flash = {a:0,col:'255,255,255'};
 const PAPER_COLS = ['#e2b04a','#f5d98a','#fff3cf','#d9dde6','#c9a13c','#e2b04a'];
-function addP(p){ if (parts.length < 700) parts.push(p); }
+function addP(p){ if (parts.length < (LOW ? 360 : 700)) parts.push(p); }
 function burst(x,y,dx,dy,n,big){
   for (let i=0;i<n;i++){
     const a = Math.atan2(dy,dx) + (Math.random()-.5)*1.8, sp = R*(1.5+Math.random()*(big?5:3.2));
@@ -971,6 +1104,8 @@ function showResult(){
   const acc = N ? (c.kiwami + c.yoshi*.7 + c.ka*.3)/N*100 : 0;
   const rank = acc>=97?['神','KAMI']:acc>=90?['極','KIWAMI']:acc>=80?['秀','SHU']:acc>=65?['良','RYO']:['修','SHUGYO'];
   $('#rank').textContent = rank[0]; $('#rankSub').textContent = rank[1];
+  lastResult = { diff:G.diff, score:G.score, max_combo:G.maxCombo, acc:Math.round(acc*100)/100, heads:G.headsLost, defeated:!!G.defeated, sent:false };
+  resetOffer();
   $('#resKojo').textContent = G.defeated ? '「これにて奉納、舞い納め」' : '「またの夜に、舞い参らん」';
   $('#resHead').textContent = G.defeated ? '大蛇退治 成就' : '夜明け、大蛇は闇へ';
   $('#resSub').textContent = G.defeated
@@ -1128,7 +1263,7 @@ function drawOrochiBody(T, pulse){
   let alpha = .55;
   if (G.mode==='play'||G.mode==='result'){ alpha = .13 + .17*(G.hp/G.hpMax); if (G.defeated) alpha *= clamp(1-(VT-G.defeatT)/2.5,0,1); }
   if (alpha <= .01) return;
-  const n = 64;
+  const n = LOW ? 40 : 64;
   ctx.save();
   for (let i=0;i<n;i++){
     const u = i/(n-1);
@@ -2123,8 +2258,17 @@ function render(){
   if (playing && G.mode==='play'){ drawHUD(now, T); drawKojo(T); }
 }
 let lastTs = performance.now();
+const perf = { sum:0, n:0 };
 function frame(ts){
-  const dt = Math.min(.05, Math.max(0,(ts - lastTs)/1000)); lastTs = ts;
+  const raw = Math.max(0,(ts - lastTs)/1000), dt = Math.min(.05, raw); lastTs = ts;
+  // 自動画質: drop resolution when frames run long for a sustained stretch
+  if (!document.hidden && raw < .5){
+    perf.sum += raw; perf.n++;
+    if (perf.n >= 120){
+      const avg = perf.sum/perf.n; perf.sum = 0; perf.n = 0;
+      if (avg > .024){ setLow(); if (dprCap > 1){ dprCap = Math.max(1, dprCap - .5); resize(); } }
+    }
+  }
   VT = ts/1000;
   scheduler();
   update(dt);
@@ -2135,6 +2279,122 @@ function frame(ts){
 /* ============================================================
    入 — input & UI
    ============================================================ */
+/* ============================================================
+   奉納番付 — shared leaderboard (Supabase REST)
+   The key below is Supabase's public "anon / publishable" key: it is meant to ship in
+   browser code. Row Level Security only allows reading, and writes go through the
+   submit_score() function, which validates every field (see supabase/setup.sql).
+   ============================================================ */
+const SUPA = { url:'', key:'' };
+const bzReady = () => !!(SUPA.url && SUPA.key);
+let lastResult = null, bzDiff = 'roku';
+function supaHeaders(){
+  const h = { apikey:SUPA.key, 'Content-Type':'application/json' };
+  if (!SUPA.key.startsWith('sb_')) h.Authorization = 'Bearer ' + SUPA.key;
+  return h;
+}
+function kanjiNum(n){
+  const d = ['','一','二','三','四','五','六','七','八','九'];
+  if (n < 10) return d[n];
+  if (n < 100) return (n>=20 ? d[Math.floor(n/10)] : '') + '十' + d[n%10];
+  return String(n);
+}
+function wareki(date){
+  const m = ['睦月','如月','弥生','卯月','皐月','水無月','文月','葉月','長月','神無月','霜月','師走'][date.getMonth()];
+  const y = date.getFullYear() - 2018;
+  return `令和${y===1?'元':kanjiNum(y)}年 ${m} 改`;
+}
+const RANK_TITLE = n => n===1 ? '神楽頭' : n===2 ? '舞長' : n===3 ? '太夫' : '舞手';
+const NG = /(https?:|www\.|死ね|殺す|ころす|ちんこ|まんこ|うんこ|セックス|fuck|shit|bitch)/i;
+async function fetchBanzuke(diff){
+  const q = `select=id,name,score,max_combo,acc,heads,defeated&diff=eq.${diff}&order=score.desc,created_at.asc&limit=30`;
+  const r = await fetch(`${SUPA.url}/rest/v1/banzuke?${q}`, { headers:supaHeaders() });
+  if (!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
+}
+async function renderBanzuke(){
+  const list = $('#bzList'), state = $('#bzState');
+  $('#bzDate').textContent = wareki(new Date()) + ' ・ ' + DIFFS[bzDiff].name + 'の部';
+  for (const b of document.querySelectorAll('.bz-tabs button')) b.setAttribute('aria-selected', String(b.dataset.d===bzDiff));
+  list.textContent = '';
+  if (!bzReady()){ state.textContent = '奉納番付は準備中です。公開まで少々お待ちください。'; return; }
+  state.textContent = '番付を取り寄せています…';
+  let rows;
+  try { rows = await fetchBanzuke(bzDiff); }
+  catch(e){ state.textContent = '番付を読み込めませんでした。通信状態を確かめて、もう一度開いてください。'; return; }
+  const mine = new Set(store.get('mine', []));
+  rows.forEach((r, i) => {
+    const n = i+1, li = document.createElement('li');
+    li.className = (n<=3 ? 'r'+n : '') + (mine.has(r.id) ? ' me' : '');
+    const mk = (cls, txt) => { const s = document.createElement('span'); s.className = cls; s.textContent = txt; return s; };
+    li.append(mk('bz-no', kanjiNum(n)), mk('bz-rank', RANK_TITLE(n)), mk('bz-name', r.name), mk('bz-score', String(r.score)),
+      mk('bz-meta', r.defeated ? '退治' : '首' + kanjiNum(r.heads)));
+    li.title = `${r.name}　奉納点 ${r.score.toLocaleString('ja-JP')}　最大連舞 ${r.max_combo}　精度 ${r.acc}%`;
+    list.append(li);
+  });
+  state.textContent = rows.length ? '' : 'まだ誰も奉納していません。最初の舞手になりましょう。';
+  $('#bzBoard').scrollLeft = $('#bzBoard').scrollWidth;
+}
+function openBanzuke(diff){
+  bzDiff = diff || G.diff || 'roku';
+  $('#banzuke').hidden = false;
+  renderBanzuke();
+  $('#bzClose').focus();
+}
+function closeBanzuke(){
+  $('#banzuke').hidden = true;
+  (G.mode==='result' ? $('#retryBtn') : $('#start')).focus();
+}
+function resetOffer(){
+  $('#bzName').value = store.get('name','');
+  $('#bzMsg').textContent = bzReady() ? '' : '奉納番付は準備中です。';
+  $('#bzSubmit').disabled = !bzReady();
+  $('#bzName').disabled = !bzReady();
+}
+async function submitOffer(ev){
+  ev.preventDefault();
+  if (!lastResult || lastResult.sent || !bzReady()) return;
+  const name = $('#bzName').value.replace(/[\s　]+/g,' ').trim();
+  const msg = $('#bzMsg');
+  if (!name){ msg.textContent = '舞手名を入れてください。'; $('#bzName').focus(); return; }
+  if ([...name].length > 12){ msg.textContent = '舞手名は12文字までです。'; return; }
+  if (NG.test(name)){ msg.textContent = 'その名は番付に載せられません。別の舞手名にしてください。'; return; }
+  $('#bzSubmit').disabled = true; msg.textContent = '奉納しています…';
+  try {
+    const r = await fetch(`${SUPA.url}/rest/v1/rpc/submit_score`, { method:'POST', headers:supaHeaders(), body:JSON.stringify({
+      p_name:name, p_diff:lastResult.diff, p_score:lastResult.score, p_max_combo:lastResult.max_combo,
+      p_acc:lastResult.acc, p_heads:lastResult.heads, p_defeated:lastResult.defeated }) });
+    const j = await r.json().catch(() => null);
+    if (!r.ok) throw new Error((j && j.message) || ('HTTP '+r.status));
+    const row = Array.isArray(j) ? j[0] : j;
+    lastResult.sent = true;
+    store.set('name', name);
+    if (row && row.id){ const mine = store.get('mine', []); mine.push(row.id); store.set('mine', mine.slice(-50)); }
+    const rk = row && row.rank ? Number(row.rank) : 0;
+    msg.textContent = rk ? `奉納しました。${DIFFS[lastResult.diff].name}の部 第${kanjiNum(rk) || rk}位「${RANK_TITLE(rk)}」です。` : '奉納しました。';
+    $('#bzName').disabled = true;
+  } catch(e){
+    $('#bzSubmit').disabled = false;
+    msg.textContent = /name/.test(e.message) ? 'その名は番付に載せられません。別の舞手名にしてください。'
+      : /busy/.test(e.message) ? '奉納が混み合っています。少し待ってからもう一度どうぞ。'
+      : '奉納できませんでした。通信状態を確かめて、もう一度お試しください。';
+  }
+}
+
+/* ============================================================
+   横向き — landscape handling for phones
+   ============================================================ */
+const portraitMQ = matchMedia('(pointer: coarse) and (orientation: portrait)');
+function onOrientation(){ if (portraitMQ.matches && G.mode==='play' && !G.paused) pauseGame(); }
+if (portraitMQ.addEventListener) portraitMQ.addEventListener('change', onOrientation); else if (portraitMQ.addListener) portraitMQ.addListener(onOrientation);
+async function goLandscape(){
+  if (!TOUCH) return;
+  try {
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen({navigationUI:'hide'});
+    if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
+  } catch(e){ /* iOS and embedded views refuse; the rotate prompt covers it */ }
+}
+
 function selectDiff(d){
   G.diff = d; store.set('diff', d);
   for (const b of document.querySelectorAll('.diff')) b.setAttribute('aria-checked', String(b.dataset.d===d));
@@ -2142,16 +2402,23 @@ function selectDiff(d){
 function showOffset(){ $('#offv').textContent = (G.offset>0?'+':'') + Math.round(G.offset*1000) + ' ms'; }
 function nudgeOffset(ms){ G.offset = clamp(Math.round(G.offset*1000)+ms, -200, 200)/1000; store.set('offset', Math.round(G.offset*1000)); showOffset(); }
 document.querySelectorAll('.diff').forEach(b => b.addEventListener('click', () => selectDiff(b.dataset.d)));
-$('#start').addEventListener('click', () => startGame(G.diff));
+$('#start').addEventListener('click', () => { goLandscape(); startGame(G.diff); });
+$('#bzOpen').addEventListener('click', () => openBanzuke(G.diff));
+$('#bzFromResult').addEventListener('click', () => openBanzuke(lastResult ? lastResult.diff : G.diff));
+$('#bzClose').addEventListener('click', closeBanzuke);
+document.querySelectorAll('.bz-tabs button').forEach(b => b.addEventListener('click', () => { bzDiff = b.dataset.d; renderBanzuke(); }));
+$('#offerForm').addEventListener('submit', submitOffer);
 $('#offm').addEventListener('click', () => nudgeOffset(-10));
 $('#offp').addEventListener('click', () => nudgeOffset(10));
 $('#resumeBtn').addEventListener('click', resumeGame);
 $('#quitBtn').addEventListener('click', toTitle);
-$('#retryBtn').addEventListener('click', () => startGame(G.diff));
+$('#retryBtn').addEventListener('click', () => { goLandscape(); startGame(G.diff); });
 $('#backBtn').addEventListener('click', toTitle);
 $('#pauseBtn').addEventListener('click', pauseGame);
 $('#kamiBtn').addEventListener('click', activateTrance);
 addEventListener('keydown', e => {
+  if (!$('#banzuke').hidden){ if (e.code==='Escape'){ closeBanzuke(); e.preventDefault(); } return; }
+  if (e.target && e.target.tagName==='INPUT') return;
   if (e.repeat) { if (G.mode==='play' && (e.code in KEYMAP || e.code==='Space')) e.preventDefault(); return; }
   if (G.mode==='play'){
     if (e.code==='Escape' || e.code==='KeyP'){ G.paused ? resumeGame() : pauseGame(); e.preventDefault(); return; }
