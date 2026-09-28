@@ -2286,7 +2286,7 @@ function frame(ts){
    Web API キーは公開前提の値。書き込みの可否と値の範囲は Firestore ルールで制限する
    （firestore-rules-kagura.txt を参照）。
    ============================================================ */
-const FB = { project:'', key:'' };
+const FB = { project:'gotsu-yokagura', key:'AIzaSyBf85fYeo1WL_joFQVh14Ate9hsdZMN_XM' };
 const bzReady = () => !!(FB.project && FB.key);
 const FS = () => `https://firestore.googleapis.com/v1/projects/${FB.project}/databases/(default)/documents`;
 const rcol = diff => 'scores_kagura_' + diff;

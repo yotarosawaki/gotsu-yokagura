@@ -1,0 +1,46 @@
+rules_version = '2';
+
+// 神憑 KAMIGAKARI 奉納番付 — Firestore セキュリティルール（このプロジェクト専用・全文）
+// Firebase コンソール → Firestore Database → 「ルール」タブで、
+// 最初から入っている内容をすべて消して、このファイルの中身を貼り付け「公開」してください。
+//
+// ・誰でも番付を読める
+// ・新しい奉納（追加）だけ許可。名前の長さ、点数やコンボ数の上限、項目の種類を検証する
+// ・書き換え・削除は不可（不適切な名前はコンソールの「データ」タブから手で削除）
+// ・点数/コンボの上限は、譜面のノーツ数から計算した理論上の最大値に余裕を持たせた値
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function kaguraScoreOk(diff, maxScore, maxCombo) {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['name','score','maxCombo','acc','heads','defeated','diff','createdAt'])
+        && d.name is string && d.name.size() >= 1 && d.name.size() <= 12
+        && !d.name.matches('(?i).*(https?:|www[.]|fuck|shit|bitch).*')
+        && d.score is int && d.score >= 0 && d.score <= maxScore
+        && d.maxCombo is int && d.maxCombo >= 0 && d.maxCombo <= maxCombo
+        && d.acc is number && d.acc >= 0 && d.acc <= 100
+        && d.heads is int && d.heads >= 0 && d.heads <= 8
+        && d.defeated is bool
+        && d.diff == diff
+        && d.createdAt is timestamp;
+    }
+
+    match /scores_kagura_roku/{id} {
+      allow read: if true;
+      allow create: if kaguraScoreOk('roku', 300000, 160);
+      allow update, delete: if false;
+    }
+
+    match /scores_kagura_hachi/{id} {
+      allow read: if true;
+      allow create: if kaguraScoreOk('hachi', 550000, 320);
+      allow update, delete: if false;
+    }
+
+    // それ以外の場所は読み書きすべて禁止
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
