@@ -2280,19 +2280,17 @@ function frame(ts){
    入 — input & UI
    ============================================================ */
 /* ============================================================
-   奉納番付 — shared leaderboard (Supabase REST)
-   The key below is Supabase's public "anon / publishable" key: it is meant to ship in
-   browser code. Row Level Security only allows reading, and writes go through the
-   submit_score() function, which validates every field (see supabase/setup.sql).
+   奉納番付 — shared leaderboard (Firestore REST)
+   ベルーガタワーと同じ方式。部ごとに保存先(コレクション)を分ける:
+   scores_kagura_roku / scores_kagura_hachi
+   Web API キーは公開前提の値。書き込みの可否と値の範囲は Firestore ルールで制限する
+   （firestore-rules-kagura.txt を参照）。
    ============================================================ */
-const SUPA = { url:'', key:'' };
-const bzReady = () => !!(SUPA.url && SUPA.key);
+const FB = { project:'', key:'' };
+const bzReady = () => !!(FB.project && FB.key);
+const FS = () => `https://firestore.googleapis.com/v1/projects/${FB.project}/databases/(default)/documents`;
+const rcol = diff => 'scores_kagura_' + diff;
 let lastResult = null, bzDiff = 'roku';
-function supaHeaders(){
-  const h = { apikey:SUPA.key, 'Content-Type':'application/json' };
-  if (!SUPA.key.startsWith('sb_')) h.Authorization = 'Bearer ' + SUPA.key;
-  return h;
-}
 function kanjiNum(n){
   const d = ['','一','二','三','四','五','六','七','八','九'];
   if (n < 10) return d[n];
@@ -2306,11 +2304,35 @@ function wareki(date){
 }
 const RANK_TITLE = n => n===1 ? '神楽頭' : n===2 ? '舞長' : n===3 ? '太夫' : '舞手';
 const NG = /(https?:|www\.|死ね|殺す|ころす|ちんこ|まんこ|うんこ|セックス|fuck|shit|bitch)/i;
-async function fetchBanzuke(diff){
-  const q = `select=id,name,score,max_combo,acc,heads,defeated&diff=eq.${diff}&order=score.desc,created_at.asc&limit=30`;
-  const r = await fetch(`${SUPA.url}/rest/v1/banzuke?${q}`, { headers:supaHeaders() });
+async function fsPost(path, body){
+  const r = await fetch(`${FS()}${path}?key=${FB.key}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
   if (!r.ok) throw new Error('HTTP '+r.status);
   return r.json();
+}
+async function fetchBanzuke(diff){
+  const res = await fsPost(':runQuery', { structuredQuery:{ from:[{collectionId:rcol(diff)}],
+    orderBy:[{field:{fieldPath:'score'},direction:'DESCENDING'}], limit:30 } });
+  return res.filter(x => x.document).map(x => {
+    const f = x.document.fields;
+    return { id:x.document.name.split('/').pop(), name:f.name.stringValue, score:+f.score.integerValue,
+      max_combo:+(f.maxCombo?.integerValue||0), acc:+(f.acc?.doubleValue ?? f.acc?.integerValue ?? 0),
+      heads:+(f.heads?.integerValue||0), defeated:!!f.defeated?.booleanValue };
+  });
+}
+async function rankOf(diff, score){
+  const res = await fsPost(':runAggregationQuery', { structuredAggregationQuery:{
+    structuredQuery:{ from:[{collectionId:rcol(diff)}],
+      where:{ fieldFilter:{ field:{fieldPath:'score'}, op:'GREATER_THAN', value:{integerValue:String(score)} } } },
+    aggregations:[{ alias:'n', count:{} }] } });
+  const n = res && res[0] && res[0].result && res[0].result.aggregateFields && res[0].result.aggregateFields.n;
+  return n ? Number(n.integerValue) + 1 : 0;
+}
+async function postScore(p){
+  const doc = await fsPost('/' + rcol(p.diff), { fields:{
+    name:{stringValue:p.name}, score:{integerValue:String(p.score)}, maxCombo:{integerValue:String(p.max_combo)},
+    acc:{doubleValue:p.acc}, heads:{integerValue:String(p.heads)}, defeated:{booleanValue:p.defeated},
+    diff:{stringValue:p.diff}, createdAt:{timestampValue:new Date().toISOString()} } });
+  return doc.name.split('/').pop();
 }
 async function renderBanzuke(){
   const list = $('#bzList'), state = $('#bzState');
@@ -2361,22 +2383,16 @@ async function submitOffer(ev){
   if (NG.test(name)){ msg.textContent = 'その名は番付に載せられません。別の舞手名にしてください。'; return; }
   $('#bzSubmit').disabled = true; msg.textContent = '奉納しています…';
   try {
-    const r = await fetch(`${SUPA.url}/rest/v1/rpc/submit_score`, { method:'POST', headers:supaHeaders(), body:JSON.stringify({
-      p_name:name, p_diff:lastResult.diff, p_score:lastResult.score, p_max_combo:lastResult.max_combo,
-      p_acc:lastResult.acc, p_heads:lastResult.heads, p_defeated:lastResult.defeated }) });
-    const j = await r.json().catch(() => null);
-    if (!r.ok) throw new Error((j && j.message) || ('HTTP '+r.status));
-    const row = Array.isArray(j) ? j[0] : j;
+    const id = await postScore({ ...lastResult, name });
     lastResult.sent = true;
     store.set('name', name);
-    if (row && row.id){ const mine = store.get('mine', []); mine.push(row.id); store.set('mine', mine.slice(-50)); }
-    const rk = row && row.rank ? Number(row.rank) : 0;
+    const mine = store.get('mine', []); mine.push(id); store.set('mine', mine.slice(-50));
+    let rk = 0; try { rk = await rankOf(lastResult.diff, lastResult.score); } catch(e){}
     msg.textContent = rk ? `奉納しました。${DIFFS[lastResult.diff].name}の部 第${kanjiNum(rk) || rk}位「${RANK_TITLE(rk)}」です。` : '奉納しました。';
     $('#bzName').disabled = true;
   } catch(e){
     $('#bzSubmit').disabled = false;
-    msg.textContent = /name/.test(e.message) ? 'その名は番付に載せられません。別の舞手名にしてください。'
-      : /busy/.test(e.message) ? '奉納が混み合っています。少し待ってからもう一度どうぞ。'
+    msg.textContent = /40[03]/.test(e.message) ? 'その内容は番付に載せられません。舞手名を変えてもう一度どうぞ。'
       : '奉納できませんでした。通信状態を確かめて、もう一度お試しください。';
   }
 }
