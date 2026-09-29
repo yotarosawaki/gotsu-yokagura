@@ -2283,11 +2283,11 @@ function frame(ts){
    奉納番付 — shared leaderboard (Firestore REST)
    ベルーガタワーと同じ方式。部ごとに保存先(コレクション)を分ける:
    scores_kagura_roku / scores_kagura_hachi
-   Web API キーは公開前提の値。書き込みの可否と値の範囲は Firestore ルールで制限する
+   APIキーは付けない（Firestore REST はキーなしで動き、可否はルールだけで決まる）。書き込みの可否と値の範囲は Firestore ルールで制限する
    （firestore-rules-kagura.txt を参照）。
    ============================================================ */
-const FB = { project:'gotsu-yokagura', key:'AIzaSyBf85fYeo1WL_joFQVh14Ate9hsdZMN_XM' };
-const bzReady = () => !!(FB.project && FB.key);
+const FB = { project:'gotsu-yokagura' };
+const bzReady = () => !!FB.project;
 const FS = () => `https://firestore.googleapis.com/v1/projects/${FB.project}/databases/(default)/documents`;
 const rcol = diff => 'scores_kagura_' + diff;
 let lastResult = null, bzDiff = 'roku';
@@ -2305,7 +2305,7 @@ function wareki(date){
 const RANK_TITLE = n => n===1 ? '神楽頭' : n===2 ? '舞長' : n===3 ? '太夫' : '舞手';
 const NG = /(https?:|www\.|死ね|殺す|ころす|ちんこ|まんこ|うんこ|セックス|fuck|shit|bitch)/i;
 async function fsPost(path, body){
-  const r = await fetch(`${FS()}${path}?key=${FB.key}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+  const r = await fetch(`${FS()}${path}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
   if (!r.ok) throw new Error('HTTP '+r.status);
   return r.json();
 }
